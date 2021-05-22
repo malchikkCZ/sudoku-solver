@@ -1,18 +1,22 @@
 from board import Board
-import time
 
-board = Board()
-board.show()
 
-board.load()
-board.show()
+def main():
+    board = Board()
 
-input("Great job! To start solving press ENTER.")
-print("Working ...")
+    choices = {
+        "S": board.solve,
+        "G": board.generate,
+    }
 
-t = time.time()
-board.solve()
-t = time.time() - t
+    prompt = input("Do you want to (S)olve some SUDOKU or (G)enerate a new one? >>> ").upper()
 
-board.show()
-print(f"Your SUDOKU was solved in {t:0.2f} s.\n")
+    try:
+        choices[prompt]()
+    except KeyError:
+        print("You should really make up your mind.", end=" ")
+        print("Please re-run the app.\n")
+  
+
+if __name__ == "__main__":
+    main()

@@ -1,26 +1,33 @@
+import random
+
+
 class Solver:
 
     def __init__(self, board):
         self.board = board
 
     def run(self):
-        self.solve()
-        if not self.solve():
+        self.fill()
+        if not self.fill():
             return None
         return self.board
 
-    def solve(self):
+    def fill(self):
         empty = self.next_empty()
         if not empty:
             return True
         r, c = empty
-        for number in range(1, 10):
+        for number in self.numbers():
             if self.is_valid(r, c, number):
                 self.board[r][c] = number
-                if self.solve():
+                if self.fill():
                     return True
                 self.board[r][c] = 0
         return False
+    
+    def numbers(self):
+        array = list(range(1, 10))
+        return array
 
     def next_empty(self):
         for r in range(9):
@@ -70,3 +77,18 @@ class Loader(Solver):
                         print("Some of the numbers can't be placed.", end=" ")
                         return None
         return self.board
+
+
+class Generator(Solver):
+
+    def __init__(self, board):
+        super().__init__(board)
+
+    def run(self):
+        self.fill()
+        return self.board
+    
+    def numbers(self):
+        array = list(range(1, 10))
+        random.shuffle(array)
+        return array

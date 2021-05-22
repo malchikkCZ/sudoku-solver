@@ -1,12 +1,14 @@
 import os
 import sys
-from engine import Loader, Solver
+import time
+from engine import Generator, Loader, Solver
 
 
 class Board:
 
     def __init__(self):
         self.board = [[0 for i in range(9)] for j in range(9)]
+        self.show()
 
     def show(self):
         os.system("cls" if os.name=="nt" else "clear")
@@ -36,11 +38,26 @@ class Board:
         if not self.board:
             print("Please re-run the app.\n")
             sys.exit()
-        return True
+        self.show()
     
     def solve(self):
+        self.load()
+        input("Great job! To start solving press ENTER.")
+        print("Working ...")
+        t = time.time()
         solver = Solver(self.board)
         self.board = solver.run()
         if not self.board:
             print("I'm sorry, but this SUDOKU can't be solved.\n")
             sys.exit()
+        self.show()        
+        t = time.time() - t
+        print(f"Your SUDOKU was solved in {t:0.2f} s.\n")
+    
+    def generate(self):
+        t = time.time()
+        generator = Generator(self.board)
+        self.board = generator.run()
+        self.show()
+        t = time.time() - t
+        print(f"Your SUDOKU was generated in {t:0.2f} s.\n")
