@@ -3,8 +3,9 @@ import random
 
 class Solver:
 
-    def __init__(self, board):
+    def __init__(self, board, excluded=(None, None, None)):
         self.board = board
+        self.excluded = excluded
 
     def run(self):
         self.fill()
@@ -18,6 +19,8 @@ class Solver:
             return True
         r, c = empty
         for number in self.numbers():
+            if (r, c, number) == self.excluded:
+                continue
             if self.is_valid(r, c, number):
                 self.board[r][c] = number
                 if self.fill():
@@ -86,6 +89,20 @@ class Generator(Solver):
 
     def run(self):
         self.fill()
+        to_hide = random.randint(30, 60)
+        while to_hide > 0:
+            r = random.randint(0, 8)
+            c = random.randint(0, 8)
+            if self.board[r][c] == 0:
+                continue
+            number = self.board[r][c]
+            self.board[r][c] = 0
+            test_board = [row.copy() for row in self.board]
+            solver = Solver(test_board, excluded=(r, c, number))
+            if not solver.run():
+                to_hide -= 1
+            else:
+                self.board[r][c] = number
         return self.board
     
     def numbers(self):
